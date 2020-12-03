@@ -11,7 +11,7 @@ const IPCIDR = require('ip-cidr');
  * @param {string} cidrStr - The IPv4 subnet expressed
  *                 in CIDR format.
  * @param {callback} callback - A callback function.
- * @return {function} (firstIpAddress) - Returning funtion having string reprsentation of object and any error occured.
+ * @return {string} (firstIpAddress) - An IPv4 address.
  */
 function getFirstIpAddress(cidrStr, callback) {
 
@@ -39,10 +39,10 @@ function getFirstIpAddress(cidrStr, callback) {
     [firstIpAddress] = cidr.toArray(options);
   }
   // Call the passed callback function.
+  // Node.js convention is to pass error data as the first argument to a callback.
   // The IAP convention is to pass returned data as the first argument and error
-  // First parameter is string representation of object with properties as IPv4 and Ipv6.
-  let object ={ipv4:firstIpAddress,ipv6:getIpv4MappedIpv6Address(firstIpAddress)};
-  return callback(JSON.stringify (object), callbackError);
+  // data as the second argument to the callback function.
+  return callback(firstIpAddress, callbackError);
 }
 
 /**
@@ -57,11 +57,7 @@ function getIpv4MappedIpv6Address(ipv4) {
 
   // Prepare to derive a Hex version of the dotted-quad decimal IPv4 address.
   // Split the IPv4 address into its four parts.
-  // Returning null in case of null or blank input.
-  if (ipv4 === null || ipv4 === '')
-  return null;
   let ipv4Quads = ipv4.split('.');
-  
   // Count the number of parts found.
   let numIpv4Segments = ipv4Quads.length;
 
@@ -123,7 +119,6 @@ function main() {
       }
       console.log(`  Response returned from GET request: ${data}`);
     });
-    // console.log(`  Response returned from GET request: ${getFirstIpAddress(sampleCidrs[i])}`);
   }
   // Iterate over sampleIpv4s and pass the element's value to getIpv4MappedIpv6Address().
   for (let i = 0; i < sampleIpv4sLen; i++) {
