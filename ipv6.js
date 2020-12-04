@@ -11,8 +11,6 @@ function getIpv4MappedIpv6Address(ipv4) {
   // Prepare to derive a Hex version of the dotted-quad decimal IPv4 address.
   // Split the IPv4 address into its four parts.
   // Returning null in case of null or blank input.
-  if (ipv4 === null || ipv4 === '')
-  return null;
   let ipv4Quads = ipv4.split('.');
   
   // Count the number of parts found.

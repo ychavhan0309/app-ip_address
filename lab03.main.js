@@ -46,6 +46,10 @@ function getFirstIpAddress(cidrStr, callback) {
     limit: 1
   };
 
+let returnObject = {
+    ipv4:null,
+    ipv6:null
+}
   // Use the object's isValid() method to verify the passed CIDR.
   if (!cidr.isValid()) {
     // If the passed CIDR is invalid, set an error message.
@@ -54,12 +58,19 @@ function getFirstIpAddress(cidrStr, callback) {
     // If the passed CIDR is valid, call the object's toArray() method.
     // Notice the destructering assignment syntax to get the value of the first array's element.
     [firstIpAddress] = cidr.toArray(options);
+
+    //Get Ipv6 Address
+    let mappedAddress = getIpv4MappedIpv6Address(firstIpAddress);
+    if (mappedAddress) {
+        returnObject.ipv4 = firstIpAddress;
+        returnObject.ipv6 = mappedAddress;
+    }
   }
   // Call the passed callback function.
+  // Node.js convention is to pass error data as the first argument to a callback.
   // The IAP convention is to pass returned data as the first argument and error
-  // First parameter is string representation of object with properties as IPv4 and Ipv6.
-  let object ={ipv4:firstIpAddress,ipv6:getIpv4MappedIpv6Address(firstIpAddress)};
-  return callback(JSON.stringify (object), callbackError);
+  // Data as the second argument to the callback function.
+  return callback(returnObject, callbackError);
 }
 
 
@@ -86,7 +97,7 @@ function main() {
       if (error) {
         console.error(`  Error returned from GET request: ${error}`);
       }
-      console.log(`  Response returned from GET request: ${data}`);
+      console.log(`  Response returned from GET request: ${JSON.stringify(data)}`);
     });
     // console.log(`  Response returned from GET request: ${getFirstIpAddress(sampleCidrs[i])}`);
   }
