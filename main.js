@@ -1,4 +1,3 @@
-
 /*
   Import the built-in path module.
   See https://nodejs.org/api/path.html
@@ -40,13 +39,10 @@ class IpAddress {
     // under Documentation -> Developer Guides -> Log Class Guide
     log.info('Starting the IpAddress product.');
   }
-    getFirstIpAddress(cidrStr, callback) {
+ getFirstIpAddress(cidrStr, callback) {
 
   // Initialize return arguments for callback
-  let firstIpAddress = {
-  ipv4:null,
-  ipv6:null};
-  
+  let firstIpAddress = null;
   let callbackError = null;
 
   // Instantiate an object from the imported class and assign the instance to variable cidr.
@@ -59,6 +55,10 @@ class IpAddress {
     limit: 1
   };
 
+let returnObject = {
+    ipv4:null,
+    ipv6:null
+}
   // Use the object's isValid() method to verify the passed CIDR.
   if (!cidr.isValid()) {
     // If the passed CIDR is invalid, set an error message.
@@ -80,8 +80,8 @@ class IpAddress {
   // The IAP convention is to pass returned data as the first argument and error
   // Data as the second argument to the callback function.
   return callback(returnObject, callbackError);
-
-  }
+  
+}
 }
 
 module.exports = new IpAddress;
